@@ -132,7 +132,7 @@ public class RestTemplateExamples {
     }
 
     @Test
-    public void updateCustomerUsingPatch() throws Exception {
+    public void updateProductUsingPatch() throws Exception {
 
         //create customer to update
         String apiUrl = API_ROOT + "/products/";
@@ -156,7 +156,7 @@ public class RestTemplateExamples {
 
         System.out.println("Created product id: " + id);
 
-        postMap.put("name", "Plum");
+//        postMap.put("name", "Plum");
         postMap.put("price", "3.1");
 
         //example of setting headers
@@ -169,6 +169,36 @@ public class RestTemplateExamples {
         JsonNode updatedNode = restTemplate.patchForObject(apiUrl + id, entity, JsonNode.class);
 
         System.out.println(updatedNode.toString());
+    }
+
+    @Test
+    public void deleteProduct() {
+
+        //create product to delete
+        String apiUrl = API_ROOT + "/products/";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        //Java object to JSON
+        Map<String, Object> postMap = new HashMap<>();
+        postMap.put("name", "Orange");
+        postMap.put("price", 45);
+
+        JsonNode jsonNode = restTemplate.postForObject(apiUrl, postMap, JsonNode.class);
+
+        System.out.println("Response");
+        System.out.println(jsonNode.toString());
+
+        Integer id = jsonNode.get("id").intValue();
+        System.out.println("Create product id: " + id);
+
+        restTemplate.delete(apiUrl + id, postMap);
+
+        System.out.println("Product deleted");
+
+        //error Not Fount expected
+        restTemplate.getForObject(apiUrl + id, JsonNode.class);
+
     }
 
     @Test(expected = HttpClientErrorException.class)
